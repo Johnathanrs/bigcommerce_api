@@ -4,7 +4,7 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os
-from flask import request, json
+from flask import json
 
 # do __name__.split('.')[0] if initialising from a file not at project root
 app = flask.Flask(__name__)
@@ -143,8 +143,11 @@ def auth_callback():
     email = token['user']['email']
     access_token = token['access_token']
 
-    if request.headers['Content-Type'] == 'application/json':
-            print(json.dumps(request.json))
+    try:
+        if flask.request.headers['Content-Type'] == 'application/json':
+                print(json.dumps(request.json))
+    except Exception:
+        pass
 
     # Create or update store
     store = Store.query.filter_by(store_hash=store_hash).first()
