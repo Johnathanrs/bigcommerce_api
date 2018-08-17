@@ -4,6 +4,7 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os
+from flask import request, json
 
 # do __name__.split('.')[0] if initialising from a file not at project root
 app = flask.Flask(__name__)
@@ -125,7 +126,7 @@ def client_secret():
 
 
 # The Auth Callback URL. See https://developer.bigcommerce.com/api/callback
-@app.route('/bigcommerce/callback')
+@app.route('/bigcommerce/callback', methods=['GET', 'POST'])
 def auth_callback():
     # Put together params for token request
     code = flask.request.args['code']
@@ -141,6 +142,9 @@ def auth_callback():
     bc_user_id = token['user']['id']
     email = token['user']['email']
     access_token = token['access_token']
+
+    if request.headers['Content-Type'] == 'application/json':
+            print(json.dumps(request.json))
 
     # Create or update store
     store = Store.query.filter_by(store_hash=store_hash).first()
