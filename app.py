@@ -144,8 +144,10 @@ def auth_callback():
     access_token = token['access_token']
 
     try:
-        if flask.request.headers['Content-Type'] == 'application/json':
-                print(json.dumps(flask.request.json))
+        if flask.request.method == 'POST':
+            print(flask.request)
+            dir(flask.request)
+            return 200
     except Exception:
         pass
 
