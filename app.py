@@ -338,7 +338,7 @@ def message():
             status=200,
             mimetype='application/json'
             )
-            return response
+        return response
 
     elif request.headers['Content-Type'] == 'application/json':
         print(json.dumps(request.json))
@@ -348,7 +348,7 @@ def message():
             status=200,
             mimetype='application/json'
             )
-            return response
+        return response
 
     elif request.headers['Content-Type'] == 'application/octet-stream':
         f = open('./binary', 'wb')
