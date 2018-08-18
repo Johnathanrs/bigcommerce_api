@@ -4,7 +4,7 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os
-from flask import json
+from flask import json, Response, jsonify
 
 # do __name__.split('.')[0] if initialising from a file not at project root
 app = flask.Flask(__name__)
@@ -23,6 +23,7 @@ app.config['APP_CLIENT_SECRET'] = os.getenv('APP_CLIENT_SECRET')
 app.config['SESSION_SECRET'] = os.getenv('SESSION_SECRET', os.urandom(64))
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///data/hello_world.sqlite')
 app.config['SQLALCHEMY_ECHO'] = app.config['DEBUG']
+app.config['ALLOWED_HOSTS'] =
 
 # Setup secure cookie secret
 app.secret_key = app.config['SESSION_SECRET']
@@ -143,14 +144,6 @@ def auth_callback():
     email = token['user']['email']
     access_token = token['access_token']
 
-    try:
-        if flask.request.method == 'POST':
-            print(flask.request)
-            dir(flask.request)
-            return 200
-    except Exception:
-        pass
-
     # Create or update store
     store = Store.query.filter_by(store_hash=store_hash).first()
     if store is None:
@@ -189,7 +182,6 @@ def auth_callback():
     # Log user in and redirect to app home
     flask.session['storeuserid'] = storeuser.id
     return flask.redirect(app.config['APP_URL'])
-
 
 # The Load URL. See https://developer.bigcommerce.com/api/load
 @app.route('/bigcommerce/load')
@@ -317,6 +309,55 @@ def instructions():
     context = dict()
     return render('instructions.html', context)
 
+""" ********************************************************** """
+
+@app.route('/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def api_echo():
+    if request.method == 'GET':
+        return "ECHO: GET\n"
+
+    elif request.method == 'POST':
+        return "ECHO: POST\n"
+
+    elif request.method == 'PATCH':
+        return "ECHO: PACTH\n"
+
+    elif request.method == 'PUT':
+        return "ECHO: PUT\n"
+
+    elif request.method == 'DELETE':
+        return "ECHO: DELETE"
+
+
+@app.route('/bigcommerce/message', methods=['POST', 'GET'])
+def message():
+    if request.headers['Content-Type'] == 'text/plain':
+        print(request.data)
+        data = {}
+        response = app.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+            )
+            return response
+
+    elif request.headers['Content-Type'] == 'application/json':
+        print(json.dumps(request.json))
+        data = {}
+        response = app.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+            )
+            return response
+
+    elif request.headers['Content-Type'] == 'application/octet-stream':
+        f = open('./binary', 'wb')
+        f.write(request.data)
+                f.close()
+        return "Binary message written!"
+    else:
+        return "415 Unsupported Media Type ;)"
 
 if __name__ == "__main__":
     db.create_all()
