@@ -4,7 +4,7 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os
-from flask import json, Response, jsonify
+from flask import json, Response, jsonify, request
 
 # do __name__.split('.')[0] if initialising from a file not at project root
 app = flask.Flask(__name__)
