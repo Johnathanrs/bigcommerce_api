@@ -145,7 +145,7 @@ def auth_callback():
 
     try:
         if flask.request.headers['Content-Type'] == 'application/json':
-                print(json.dumps(request.json))
+                print(json.dumps(flask.request.json))
     except Exception:
         pass
 
