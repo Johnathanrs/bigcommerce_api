@@ -270,6 +270,54 @@ def remove_user():
 
     return flask.Response('Deleted', status=204)
 
+""" ********************************************************** """
+
+@app.route('/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def api_echo():
+    if request.method == 'GET':
+        return "ECHO: GET\n"
+
+    elif request.method == 'POST':
+        return "ECHO: POST\n"
+
+    elif request.method == 'PATCH':
+        return "ECHO: PACTH\n"
+
+    elif request.method == 'PUT':
+        return "ECHO: PUT\n"
+
+    elif request.method == 'DELETE':
+        return "ECHO: DELETE"
+
+@app.route('/bigcommerce/message', methods=['POST', 'GET'])
+def message():
+    if request.headers['Content-Type'] == 'text/plain':
+        print(request.data)
+        data = {}
+        response = app.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+            )
+        return response
+
+    elif request.headers['Content-Type'] == 'application/json':
+        print('ECHO {}'.format(str(json.dumps(request.json))))
+        data = {}
+        response = app.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+            )
+        return response
+
+    elif request.headers['Content-Type'] == 'application/octet-stream':
+        f = open('./binary', 'wb')
+        f.write(request.data)
+        f.close()
+        return "Binary message written!"
+    else:
+        return "415 Unsupported Media Type ;)"
 
 #
 # App interface
@@ -298,6 +346,7 @@ def index():
     context['store'] = store
     context['client_id'] = client_id()
     context['api_url'] = client.connection.host
+    context['json'] = json.dumps(request.json)
     return render('index.html', context)
 
 
@@ -307,56 +356,6 @@ def instructions():
         return "Forbidden - instructions only visible in debug mode"
     context = dict()
     return render('instructions.html', context)
-
-""" ********************************************************** """
-
-@app.route('/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
-def api_echo():
-    if request.method == 'GET':
-        return "ECHO: GET\n"
-
-    elif request.method == 'POST':
-        return "ECHO: POST\n"
-
-    elif request.method == 'PATCH':
-        return "ECHO: PACTH\n"
-
-    elif request.method == 'PUT':
-        return "ECHO: PUT\n"
-
-    elif request.method == 'DELETE':
-        return "ECHO: DELETE"
-
-
-@app.route('/bigcommerce/message', methods=['POST', 'GET'])
-def message():
-    if request.headers['Content-Type'] == 'text/plain':
-        print(request.data)
-        data = {}
-        response = app.response_class(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-            )
-        return response
-
-    elif request.headers['Content-Type'] == 'application/json':
-        print(json.dumps(request.json))
-        data = {}
-        response = app.response_class(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-            )
-        return response
-
-    elif request.headers['Content-Type'] == 'application/octet-stream':
-        f = open('./binary', 'wb')
-        f.write(request.data)
-        f.close()
-        return "Binary message written!"
-    else:
-        return "415 Unsupported Media Type ;)"
 
 if __name__ == "__main__":
     db.create_all()
