@@ -23,7 +23,6 @@ app.config['APP_CLIENT_SECRET'] = os.getenv('APP_CLIENT_SECRET')
 app.config['SESSION_SECRET'] = os.getenv('SESSION_SECRET', os.urandom(64))
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///data/hello_world.sqlite')
 app.config['SQLALCHEMY_ECHO'] = app.config['DEBUG']
-app.config['ALLOWED_HOSTS'] =
 
 # Setup secure cookie secret
 app.secret_key = app.config['SESSION_SECRET']
