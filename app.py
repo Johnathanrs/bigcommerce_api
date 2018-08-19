@@ -306,7 +306,7 @@ def order(order_id):
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
-        sys.stdout.write(str(call_api) + "\n")
+        sys.stdout.write(str(call_api.context) + "\n")
         response = app.response_class(
             status=200,
             mimetype='application/json'
@@ -315,10 +315,10 @@ def order(order_id):
 
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
-    sys.stdout.write("************** This has been called ***************\n")
-    sys.stdout.write(str(request.get_json()) + "\n")
+    sys.stdout.write("************** Message has been called ***************\n")
     post = request.get_json()
     if post['scope'] == 'store/order/created':
+        sys.stdout.write("************** Order has been called ***************\n")
         order(post['data']['id'])
 
     if request.headers['Content-Type'] == 'text/plain':
