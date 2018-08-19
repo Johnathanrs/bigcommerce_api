@@ -294,7 +294,8 @@ def api_echo():
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
     if request.headers['Content-Type'] == 'text/plain':
-        output(request.get_json())
+        output("get_json()",request.get_json())
+        output("request.form.get()", request.form.get(""))
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -310,9 +311,17 @@ def message():
             status=200,
             mimetype='application/json'
             )
-        temp = Calls(request.get_json())
-        db.session.add(temp)
-        db.session.commit()
+        temp = request.get_json()
+        temp2 = request.form.get("")
+        if temp != None:
+            Calls(temp)
+            db.session.add(temp)
+            db.session.commit()
+        else:
+            Calls(temp2)
+            db.session.add(temp)
+            db.session.commit()
+
         return response
 
     elif request.headers['Content-Type'] == 'application/octet-stream':
