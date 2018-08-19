@@ -1,9 +1,7 @@
 from bigcommerce.api import BigcommerceApi
-import dotenv
-import flask
+import dotenv, os, sys, flask, requests
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
-import os, sys
 from flask import json, Response, jsonify, request, render_template
 
 # do __name__.split('.')[0] if initialising from a file not at project root
@@ -303,7 +301,7 @@ def order(id):
         'X-Auth-Token':'rfbak4h4qpotsle5a6z2pziyyoaw8gi'
     }
 
-    call_api = request.get(url, headers, verify=False)
+    call_api = requests.get(url, headers, verify=False)
     system.stdout.write(str(call_api) + "\n")
 
 @app.route('/bigcommerce/message', methods=['POST'])
