@@ -35,7 +35,6 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     bc_id = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(120), nullable=False)
-    products = db.Column(db.String(120))
     storeusers = relationship("StoreUser", backref="user")
 
     def __init__(self, bc_id, email):
@@ -44,6 +43,13 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User id=%d bc_id=%d email=%s>' % (self.id, self.bc_id, self.email)
+
+class Calls(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    products = db.Column(db.String(120))
+
+    def __repr__(self):
+        return '<Calls id=%d products=%s>' % (self.id, self.products)
 
 class StoreUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -302,7 +308,7 @@ def message():
             status=200,
             mimetype='application/json'
             )
-        temp = User.products(json.dumps(json.response))
+        temp = Calls(json.dumps(json.response))
         db.session.add(temp)
         db.session.commit()
         return response
@@ -348,11 +354,11 @@ def index():
 @app.route('/webhooks')
 def webhooks():
     storeuser = StoreUser.query.filter_by(id=flask.session['storeuserid']).first()
-    queryJSON = User.query.all()
+    query = Calls.query.all()
     user = storeuser.user
     context = dict()
     context['user'] = user
-    context['json'] = queryJSON
+    context['json'] = query
     return render('webhooks.html', context)
 
 @app.route('/instructions')
