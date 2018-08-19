@@ -293,9 +293,8 @@ def api_echo():
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
     sys.stdout.write("************** This has been called ***************\n")
+    sys.stdout.write(str(request.get_json()) + "\n")
     if request.headers['Content-Type'] == 'text/plain':
-        sys.stdout.write(str(request.get_json()) + "\n")
-
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -303,10 +302,7 @@ def message():
             mimetype='application/json'
             )
         return response
-
     elif request.headers['Content-Type'] == 'application/json':
-        sys.stdout.write(str(request.get_json()) + "\n")
-
         data = {}
         response = app.response_class(
             response=json.dumps(data),
