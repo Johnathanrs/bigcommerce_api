@@ -1,11 +1,11 @@
 <!doctype html>
 <html>
     <body>
-      <h1>Welcome {{user.email}}!</h1>
+      <h1>Welcome {{context['user']}}!</h1>
 
       <hr/>
       <h2>JSON</h2>
-      <pre>{{json}}</pre>
+      <pre>{{context['json']}}</pre>
       <ul>
         {% for p in json %}
           <li>{{p}}</li>
