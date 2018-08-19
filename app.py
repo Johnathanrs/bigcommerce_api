@@ -4,7 +4,7 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os, sys
-from flask import json, Response, jsonify, request
+from flask import json, Response, jsonify, request, render_template
 
 # do __name__.split('.')[0] if initialising from a file not at project root
 app = flask.Flask(__name__)
@@ -389,7 +389,7 @@ def webhooks():
     context = dict()
     context['user'] = user
     context['json'] = query
-    return render('webhooks.html', context, test)
+    return render_template('webhooks.html', context=context, test=test)
 
 @app.route('/instructions')
 def instructions():
