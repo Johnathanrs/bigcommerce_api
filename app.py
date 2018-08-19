@@ -292,10 +292,9 @@ def api_echo():
 
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
-    sys.stdout.write("This has been called")
+    sys.stdout.write("************** This has been called ***************/n")
     if request.headers['Content-Type'] == 'text/plain':
-        request.get_json()
-        request.form.get("")
+        sys.stdout.write(str(request.get_json()))
 
         data = {}
         response = app.response_class(
@@ -306,19 +305,18 @@ def message():
         temp = request.get_json()
         temp2 = request.form.get("")
         if temp != None:
-            Calls(temp)
-            db.session.add(temp)
+            load = Calls(temp)
+            db.session.add(load)
             db.session.commit()
         else:
-            Calls(temp2)
-            db.session.add(temp)
+            load2 = Calls(temp2)
+            db.session.add(load2)
             db.session.commit()
 
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
-        request.get_json()
-        request.form.get("")
+        sys.stdout.write(str(request.get_json()))
 
         data = {}
         response = app.response_class(
@@ -329,12 +327,12 @@ def message():
         temp = request.get_json()
         temp2 = request.form.get("")
         if temp != None:
-            Calls(temp)
-            db.session.add(temp)
+            load = Calls(temp)
+            db.session.add(load)
             db.session.commit()
         else:
-            Calls(temp2)
-            db.session.add(temp)
+            load2 = Calls(temp2)
+            db.session.add(load2)
             db.session.commit()
 
         return response
