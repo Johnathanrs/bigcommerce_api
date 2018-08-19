@@ -289,10 +289,9 @@ def api_echo():
         return "ECHO: DELETE"
 
 @app.route('/bigcommerce/get_order', methods=['GET'])
-def order(id):
+def order(order_id):
     #Settings for GET REQUEST
     store_hash = 't9ioozsume'
-    order_id = id
     url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
     headers = {
         'Accept':'application/json',
@@ -301,10 +300,11 @@ def order(id):
         'X-Auth-Token':'rfbak4h4qpotsle5a6z2pziyyoaw8gi'
     }
 
+    #Get Order: Call Bigcommerce API
     try:
-        call_api = requests.get(url, headers)
+        call_api = requests.get(url, headers=headers)
     except Exception as e:
-        pass
+        sys.stdout.write(str(e))
     finally:
         sys.stdout.write(str(call_api) + "\n")
         response = app.response_class(
