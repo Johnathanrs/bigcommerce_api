@@ -351,9 +351,12 @@ def index():
 
 @app.route('/webhooks')
 def instructions(input):
-    hooks = dict()
-    hooks['json'] = input
-    return render('webhooks.html', hooks)
+    storeuser = StoreUser.query.filter_by(id=flask.session['storeuserid']).first()
+    user = storeuser.user
+    context = dict()
+    context['user'] = user
+    context['json'] = input
+    return render('webhooks.html', context)
 
 @app.route('/instructions')
 def instructions():
