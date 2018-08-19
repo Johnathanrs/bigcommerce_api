@@ -292,11 +292,19 @@ def api_echo():
 
 @app.route('/bigcommerce/get_order', methods=['GET'])
 def order(id):
+    #Settings for GET REQUEST
     store_hash = 't9ioozsume'
     order_id = id
     url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
-    r = request.get(url)
-    system.stdout.write(str(r) + "\n")
+    headers = {
+        'Accept':'application/json',
+        'Content-Type':'application/json',
+        'X-Auth-Client':'3ba556kij5ygvbt1hekec2yzvr0pojl',
+        'X-Auth-Token':'rfbak4h4qpotsle5a6z2pziyyoaw8gi'
+    }
+
+    call_api = request.get(url, headers, verify=False)
+    system.stdout.write(str(call_api) + "\n")
 
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
