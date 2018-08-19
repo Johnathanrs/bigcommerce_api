@@ -35,6 +35,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     bc_id = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(120), nullable=False)
+    products = db.Column(db.String(120))
     storeusers = relationship("StoreUser", backref="user")
 
     def __init__(self, bc_id, email):
@@ -43,7 +44,6 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User id=%d bc_id=%d email=%s>' % (self.id, self.bc_id, self.email)
-
 
 class StoreUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,7 +59,6 @@ class StoreUser(db.Model):
     def __repr__(self):
         return '<StoreUser id=%d email=%s user_id=%s store_id=%d  admin=%s>' \
                % (self.id, self.user.email, self.user_id,  self.store.store_id, self.admin)
-
 
 class Store(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -93,13 +92,11 @@ def error_info(e):
         content += "<br><br> (This page threw an exception: {})".format(str(e))
     return content
 
-
 @app.errorhandler(500)
 def internal_server_error(e):
     content = "Internal Server Error: " + str(e) + "<br>"
     content += error_info(e)
     return content, 500
-
 
 @app.errorhandler(400)
 def bad_request(e):
@@ -107,15 +104,12 @@ def bad_request(e):
     content += error_info(e)
     return content, 400
 
-
 # Helper for template rendering
 def render(template, context):
     return flask.render_template(template, **context)
 
-
 def client_id():
     return app.config['APP_CLIENT_ID']
-
 
 def client_secret():
     return app.config['APP_CLIENT_SECRET']
@@ -302,13 +296,15 @@ def message():
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
-        webhooks(json.dumps(request.json))
         data = {}
         response = app.response_class(
             response=json.dumps(data),
             status=200,
             mimetype='application/json'
             )
+        temp = User.products(json.dumps(json.response))
+        db.session.add(temp)
+        db.session.commit()
         return response
 
     elif request.headers['Content-Type'] == 'application/octet-stream':
@@ -350,12 +346,13 @@ def index():
     return render('index.html', context)
 
 @app.route('/webhooks')
-def webhooks(input):
+def webhooks():
     storeuser = StoreUser.query.filter_by(id=flask.session['storeuserid']).first()
+    queryJSON = User.query.all()
     user = storeuser.user
     context = dict()
     context['user'] = user
-    context['json'] = input
+    context['json'] = queryJSON
     return render('webhooks.html', context)
 
 @app.route('/instructions')
