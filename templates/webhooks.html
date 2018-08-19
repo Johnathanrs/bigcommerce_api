@@ -5,10 +5,11 @@
 
       <hr/>
       <h2>JSON</h2>
-      <pre>{{json.products}}</pre>
+      <pre>{{json}}</pre>
+      <pre>{{json|e}}</pre>
       <ul>
         {% for p in json %}
-          <li>p</li>
+          <li>{{p}}</li>
         {% endfor %}
       </ul>
 
