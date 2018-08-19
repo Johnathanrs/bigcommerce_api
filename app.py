@@ -302,7 +302,7 @@ def message():
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
-        print('ECHO {}'.format(str(json.dumps(request.json))))
+        self.instructions(json.dumps(request.json))
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -349,6 +349,11 @@ def index():
     context['json'] = json.dumps(request.json)
     return render('index.html', context)
 
+@app.route('/webhooks')
+def instructions(input):
+    hooks = dict()
+    hooks['json'] = input
+    return render('webhooks.html', hooks)
 
 @app.route('/instructions')
 def instructions():
