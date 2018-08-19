@@ -48,6 +48,9 @@ class Calls(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     products = db.Column(db.String(120))
 
+    def __init__(self, input):
+        self.products = input
+
     def __repr__(self):
         return '<Calls id=%d products=%s>' % (self.id, self.products)
 
@@ -294,8 +297,6 @@ def api_echo():
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
     if request.headers['Content-Type'] == 'text/plain':
-        output("get_json()",request.get_json())
-        output("request.form.get()", request.form.get(""))
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -305,6 +306,9 @@ def message():
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
+        output("get_json()", request.get_json())
+        output("request.form.get()", request.form.get(""))
+
         data = {}
         response = app.response_class(
             response=json.dumps(data),
