@@ -3,7 +3,7 @@ import dotenv
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
-import os
+import os, sys
 from flask import json, Response, jsonify, request
 
 # do __name__.split('.')[0] if initialising from a file not at project root
@@ -271,6 +271,8 @@ def remove_user():
     return flask.Response('Deleted', status=204)
 
 """ ********************************************************** """
+def output(message):
+    sys.stdout.write(message)
 
 @app.route('/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
 def api_echo():
@@ -292,7 +294,7 @@ def api_echo():
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
     if request.headers['Content-Type'] == 'text/plain':
-        print(request.data)
+        output(request.get_json())
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -308,7 +310,7 @@ def message():
             status=200,
             mimetype='application/json'
             )
-        temp = Calls(json.dumps(json.response))
+        temp = Calls(request.get_json())
         db.session.add(temp)
         db.session.commit()
         return response
