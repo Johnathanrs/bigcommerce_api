@@ -301,8 +301,17 @@ def order(id):
         'X-Auth-Token':'rfbak4h4qpotsle5a6z2pziyyoaw8gi'
     }
 
-    call_api = requests.get(url, headers, verify=False)
-    sys.stdout.write(str(call_api) + "\n")
+    try:
+        call_api = requests.get(url, headers)
+    except Exception as e:
+        pass
+    finally:
+        sys.stdout.write(str(call_api) + "\n")
+        response = app.response_class(
+            status=200,
+            mimetype='application/json'
+            )
+        return response
 
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
