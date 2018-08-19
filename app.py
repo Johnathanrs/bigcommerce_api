@@ -302,7 +302,7 @@ def message():
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
-        self.instructions(json.dumps(request.json))
+        webhooks(json.dumps(request.json))
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -350,7 +350,7 @@ def index():
     return render('index.html', context)
 
 @app.route('/webhooks')
-def instructions(input):
+def webhooks(input):
     storeuser = StoreUser.query.filter_by(id=flask.session['storeuserid']).first()
     user = storeuser.user
     context = dict()
