@@ -297,12 +297,26 @@ def api_echo():
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
     if request.headers['Content-Type'] == 'text/plain':
+        output("get_json()", request.get_json())
+        output("request.form.get()", request.form.get(""))
+
         data = {}
         response = app.response_class(
             response=json.dumps(data),
             status=200,
             mimetype='application/json'
             )
+        temp = request.get_json()
+        temp2 = request.form.get("")
+        if temp != None:
+            Calls(temp)
+            db.session.add(temp)
+            db.session.commit()
+        else:
+            Calls(temp2)
+            db.session.add(temp)
+            db.session.commit()
+
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
@@ -370,11 +384,12 @@ def index():
 def webhooks():
     storeuser = StoreUser.query.filter_by(id=flask.session['storeuserid']).first()
     query = Calls.query.all()
+    test = request.get_json()
     user = storeuser.user
     context = dict()
     context['user'] = user
     context['json'] = query
-    return render('webhooks.html', context)
+    return render('webhooks.html', context, test)
 
 @app.route('/instructions')
 def instructions():
