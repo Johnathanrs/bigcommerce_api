@@ -302,7 +302,7 @@ def order(id):
     }
 
     call_api = requests.get(url, headers, verify=False)
-    system.stdout.write(str(call_api) + "\n")
+    sys.stdout.write(str(call_api) + "\n")
 
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
