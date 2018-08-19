@@ -30,7 +30,6 @@ app.secret_key = app.config['SESSION_SECRET']
 # Setup db
 db = SQLAlchemy(app)
 
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     bc_id = db.Column(db.Integer, nullable=False)
@@ -274,9 +273,6 @@ def remove_user():
     return flask.Response('Deleted', status=204)
 
 """ ********************************************************** """
-def output(message):
-    sys.stdout.write(message)
-
 @app.route('/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
 def api_echo():
     if request.method == 'GET':
@@ -296,9 +292,10 @@ def api_echo():
 
 @app.route('/bigcommerce/message', methods=['POST', 'GET'])
 def message():
+    sys.stdout.write("This has been called")
     if request.headers['Content-Type'] == 'text/plain':
-        output("get_json()", request.get_json())
-        output("request.form.get()", request.form.get(""))
+        request.get_json()
+        request.form.get("")
 
         data = {}
         response = app.response_class(
@@ -320,8 +317,8 @@ def message():
         return response
 
     elif request.headers['Content-Type'] == 'application/json':
-        output("get_json()", request.get_json())
-        output("request.form.get()", request.form.get(""))
+        request.get_json()
+        request.form.get("")
 
         data = {}
         response = app.response_class(
