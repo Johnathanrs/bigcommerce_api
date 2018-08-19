@@ -290,10 +290,22 @@ def api_echo():
     elif request.method == 'DELETE':
         return "ECHO: DELETE"
 
-@app.route('/bigcommerce/message', methods=['POST', 'GET'])
+@app.route('/bigcommerce/get_order', methods=['GET'])
+def order(id):
+    store_hash = 't9ioozsume'
+    order_id = id
+    url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
+    r = request.get(url)
+    system.stdout.write(str(r) + "\n")
+
+@app.route('/bigcommerce/message', methods=['POST'])
 def message():
     sys.stdout.write("************** This has been called ***************\n")
     sys.stdout.write(str(request.get_json()) + "\n")
+    post = request.get_json()
+    if post['scope'] == 'store/order/created':
+        order(post['data']['id'])
+
     if request.headers['Content-Type'] == 'text/plain':
         data = {}
         response = app.response_class(
@@ -310,7 +322,6 @@ def message():
             mimetype='application/json'
             )
         return response
-
     elif request.headers['Content-Type'] == 'application/octet-stream':
         f = open('./binary', 'wb')
         f.write(request.data)
