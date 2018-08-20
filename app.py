@@ -325,8 +325,8 @@ def get_order(order_id):
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
-        sys.stdout.write(str(dir(call_api)) + "\n")
-        sys.stdout.write(str(order) + "\n")
+        sys.stdout.write(str(dir(get_shipping)) + "\n")
+        sys.stdout.write(str(order['shipping_addresses']) + "\n")
         response = app.response_class(
             status=200,
             mimetype='application/json'
