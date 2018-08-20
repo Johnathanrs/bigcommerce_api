@@ -41,16 +41,6 @@ class User(db.Model):
     def __repr__(self):
         return '<User id=%d bc_id=%d email=%s>' % (self.id, self.bc_id, self.email)
 
-class Calls(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    products = db.Column(db.String(120))
-
-    def __init__(self, input):
-        self.products = input
-
-    def __repr__(self):
-        return '<Calls id=%d products=%s>' % (self.id, self.products)
-
 class StoreUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     store_id = db.Column(db.Integer, db.ForeignKey('store.id'), nullable=False)
@@ -324,6 +314,7 @@ def get_order(order_id):
     store_hash = '27ls85ds6i'
     order_url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
     ship_url = order_url + '/shippingaddresses'
+    product_url = order_url + '/products'
     headers = {
         'Accept':'application/json',
         'Content-Type':'application/json',
@@ -333,16 +324,21 @@ def get_order(order_id):
 
     #Get Order: Call Bigcommerce API
     try:
+        get_products = requests.get(product_url, headers=headers)
         get_shipping = requests.get(ship_url, headers=headers)
-        call_api = requests.get(order_url, headers=headers)
-        order = call_api.content
+        get_order = requests.get(order_url, headers=headers)
+        products = get_products.content
         shipping = get_shipping.content
+        order = get_order.content
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
         # send_order(order, shipping)
-        sys.stdout.write(str(shipping) + "\n")
         sys.stdout.write(str(order) + "\n")
+        sys.stdout.write(str(*************************************) + "\n")
+        sys.stdout.write(str(shipping) + "\n")
+        sys.stdout.write(str(*************************************) + "\n")
+        sys.stdout.write(str(products) + "\n")
         response = app.response_class(
             status=200,
             mimetype='application/json'
