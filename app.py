@@ -281,12 +281,13 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
-    sys.stdout.write("************** CALLS send_order *****************" + "\n")
+    sys.stdout.write(str(products[0]['sku']) + "\n")
+    """
     try:
         total = len(products) - 1
         items = []
-        send_request = {"sku": products[total]['sku'],}
-        """ {
+        send_request = {"sku": products[total]['sku']}
+        {
             "external_ref": order['id'],
             "company_ref_id":'20776',
             "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
@@ -315,13 +316,13 @@ def send_order(order, shipping, products):
             items.append(order)
             total -= 1
         send_request['items'] = items
-        """
     except Exception as e:
         sys.stdout.write(e)
     finally:
         sys.stdout.write("************** BEGIN *****************" + "\n")
         sys.stdout.write(str(send_request) + "\n")
         sys.stdout.write("************** END *******************" + "\n")
+    """
 
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
