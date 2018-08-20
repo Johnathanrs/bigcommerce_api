@@ -281,7 +281,7 @@ def api_echo():
 '''
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
-def send_order(order, shipping):
+def send_order(order, shipping, products):
     send_request = {
         "external_ref": order['id'],
         "company_ref_id":'20776',
@@ -333,11 +333,11 @@ def get_order(order_id):
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
-        # send_order(order, shipping)
+        # send_order(order, shipping, products)
         sys.stdout.write(str(order) + "\n")
-        sys.stdout.write(str(*************************************) + "\n")
+        sys.stdout.write("*************************************" + "\n")
         sys.stdout.write(str(shipping) + "\n")
-        sys.stdout.write(str(*************************************) + "\n")
+        sys.stdout.write("*************************************" + "\n")
         sys.stdout.write(str(products) + "\n")
         response = app.response_class(
             status=200,
