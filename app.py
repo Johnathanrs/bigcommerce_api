@@ -287,12 +287,28 @@ def api_echo():
 
     elif request.method == 'DELETE':
         return "ECHO: DELETE"
+'''
+@app.route('/WYOP/send_order', methods=['POST'])
+def send_order(order):
+    send = {
+        "external_ref": order['id'],
+        "company_ref_id":'20776',
+        "customer_name": order['billing_address']['first_name'] + " " + order['billing_address']['last_name'],
+        "customer_email": order['billing_address']['email'],
+        "shipping_address_1": order['billing_address']['street_1'],
+        "shipping_address_2": order['billing_address']['street_2'],
+        "shipping_postcode": order['billing_address']['zip'],
+        "shipping_country": order['billing_address']['country'],
+        "shipping_country_code": order['billing_address']['country_iso2'],
+        }
+'''
 
 @app.route('/bigcommerce/get_order', methods=['GET'])
-def order(order_id):
+def get_order(order_id):
     #Settings for GET REQUEST
     store_hash = 't9ioozsume'
-    url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
+    order_url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
+    ship_url = order_url + '/shippingaddresses'
     headers = {
         'Accept':'application/json',
         'Content-Type':'application/json',
@@ -302,11 +318,14 @@ def order(order_id):
 
     #Get Order: Call Bigcommerce API
     try:
-        call_api = requests.get(url, headers=headers)
+        get_shipping = requests.get(ship_url, headers=headers)
+        call_api = requests.get(order_url, headers=headers)
+        order = call_api.Context
+        order['shipping_address'] = get_shipping
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
-        sys.stdout.write(str(call_api.content) + "\n")
+        sys.stdout.write(str(order) + "\n")
         response = app.response_class(
             status=200,
             mimetype='application/json'
@@ -319,7 +338,7 @@ def message():
     post = request.get_json()
     if post['scope'] == 'store/order/created':
         sys.stdout.write("************** Order has been called ***************\n")
-        order(post['data']['id'])
+        get_order(post['data']['id'])
 
     if request.headers['Content-Type'] == 'text/plain':
         data = {}
