@@ -287,33 +287,48 @@ def api_echo():
 
     elif request.method == 'DELETE':
         return "ECHO: DELETE"
+
 '''
-@app.route('/WYOP/send_order', methods=['POST'])
-def send_order(order):
-    send = {
+#Calls WOYC API based on paramaters.
+@app.route('/WOYC/send_order', methods=['POST'])
+def send_order(order, shipping):
+    send_request = {
         "external_ref": order['id'],
         "company_ref_id":'20776',
-        "customer_name": order['billing_address']['first_name'] + " " + order['billing_address']['last_name'],
-        "customer_email": order['billing_address']['email'],
-        "shipping_address_1": order['billing_address']['street_1'],
-        "shipping_address_2": order['billing_address']['street_2'],
-        "shipping_postcode": order['billing_address']['zip'],
-        "shipping_country": order['billing_address']['country'],
-        "shipping_country_code": order['billing_address']['country_iso2'],
+        "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
+        "customer_email": shipping[0]['email'],
+
+        "shipping_address_1": shipping[0]['street_1']
+        "shipping_address_2": shipping[0]['street_2']
+        "shipping_postcode": shipping[0]['zip']
+        "shipping_country": shipping[0]['country']
+        "shipping_country_code": shipping[0]['country_iso2'],
+
+        "billing_address_1": order['billing_address']['street_1'],
+        "billing_address_2": order['billing_address']['street_2'],
+        "billing_postcode": order['billing_address']['zip'],
+        "billing_country": order['billing_address']['country'],
+        "billing_postcode": order['billing_address']['country_iso2'],
+        "items":[{
+            "external_ref": shipping[0]['order_id'],
+            "description":
+            "type": 1,
+            "quantity": shipping[0]['items_total']
+            ]}
         }
 '''
-
+#Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
 def get_order(order_id):
     #Settings for GET REQUEST
-    store_hash = 't9ioozsume'
+    store_hash = '27ls85ds6i'
     order_url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
     ship_url = order_url + '/shippingaddresses'
     headers = {
         'Accept':'application/json',
         'Content-Type':'application/json',
-        'X-Auth-Client':'3ba556kij5ygvbt1hekec2yzvr0pojl',
-        'X-Auth-Token':'rfbak4h4qpotsle5a6z2pziyyoaw8gi'
+        'X-Auth-Client':'97dt41avc2dohxzoknmm30w1hsoa3us',
+        'X-Auth-Token':'1yjssyenmt9vuu9fqw2cmoi104zgoyq'
     }
 
     #Get Order: Call Bigcommerce API
@@ -325,6 +340,7 @@ def get_order(order_id):
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
+        # send_order(order, shipping)
         sys.stdout.write(str(shipping) + "\n")
         sys.stdout.write(str(order) + "\n")
         response = app.response_class(
@@ -333,6 +349,7 @@ def get_order(order_id):
             )
         return response
 
+#Callback API Endpoint: Activates through BC webhook
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
     sys.stdout.write("************** Message has been called ***************\n")
