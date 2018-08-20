@@ -306,7 +306,7 @@ def order(order_id):
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
-        sys.stdout.write(str(call_api.context) + "\n")
+        sys.stdout.write(str(dir(call_api)) + "\n")
         response = app.response_class(
             status=200,
             mimetype='application/json'
