@@ -282,42 +282,46 @@ def api_echo():
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
     sys.stdout.write("************** CALLS send_order *****************" + "\n")
-    total = len(products) - 1
-    items = []
+    try:
+        total = len(products) - 1
+        items = []
 
-    send_request = {
-        "external_ref": order['id'],
-        "company_ref_id":'20776',
-        "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
-        "customer_email": shipping[0]['email'],
-        #shipping info
-        "shipping_address_1": shipping[0]['street_1'],
-        "shipping_address_2": shipping[0]['street_2'],
-        "shipping_postcode": shipping[0]['zip'],
-        "shipping_country": shipping[0]['country'],
-        "shipping_country_code": shipping[0]['country_iso2'],
-        #billing info
-        "billing_address_1": order['billing_address']['street_1'],
-        "billing_address_2": order['billing_address']['street_2'],
-        "billing_postcode": order['billing_address']['zip'],
-        "billing_country": order['billing_address']['country'],
-        "billing_postcode": order['billing_address']['country_iso2']
-        }
-
-    while total >= 0:
-        order = {
-            "sku": products[total]['sku'],
-            "external_ref": products[total]['order_id'],
-            "description": products[total]['name'],
-            "type": 1,
-            "quantity": products[total]['quantity']
+        send_request = {
+            "external_ref": order['id'],
+            "company_ref_id":'20776',
+            "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
+            "customer_email": shipping[0]['email'],
+            #shipping info
+            "shipping_address_1": shipping[0]['street_1'],
+            "shipping_address_2": shipping[0]['street_2'],
+            "shipping_postcode": shipping[0]['zip'],
+            "shipping_country": shipping[0]['country'],
+            "shipping_country_code": shipping[0]['country_iso2'],
+            #billing info
+            "billing_address_1": order['billing_address']['street_1'],
+            "billing_address_2": order['billing_address']['street_2'],
+            "billing_postcode": order['billing_address']['zip'],
+            "billing_country": order['billing_address']['country'],
+            "billing_postcode": order['billing_address']['country_iso2']
             }
-        items.append(order)
-        total -= 1
-    send_request['items'] = items
-    sys.stdout.write("************** BEGIN *****************" + "\n")
-    sys.stdout.write(str(send_request) + "\n")
-    sys.stdout.write("************** END *******************" + "\n")
+
+        while total >= 0:
+            order = {
+                "sku": products[total]['sku'],
+                "external_ref": products[total]['order_id'],
+                "description": products[total]['name'],
+                "type": 1,
+                "quantity": products[total]['quantity']
+                }
+            items.append(order)
+            total -= 1
+        send_request['items'] = items
+    except Exception as e:
+        sys.stdout.write(e)
+    finally:
+        sys.stdout.write("************** BEGIN *****************" + "\n")
+        sys.stdout.write(str(send_request) + "\n")
+        sys.stdout.write("************** END *******************" + "\n")
 
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
