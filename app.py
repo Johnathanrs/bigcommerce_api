@@ -285,7 +285,7 @@ def send_order(order, shipping, products):
     try:
         total = len(products) - 1
         items = []
-        send_request = {}
+        send_request = {"sku": products[total]['sku'],}
         """ {
             "external_ref": order['id'],
             "company_ref_id":'20776',
@@ -304,7 +304,6 @@ def send_order(order, shipping, products):
             "billing_country": order['billing_address']['country'],
             "billing_postcode": order['billing_address']['country_iso2']
             }
-        """
         while total >= 0:
             order = {
                 "sku": products[total]['sku'],
@@ -316,6 +315,7 @@ def send_order(order, shipping, products):
             items.append(order)
             total -= 1
         send_request['items'] = items
+        """
     except Exception as e:
         sys.stdout.write(e)
     finally:
