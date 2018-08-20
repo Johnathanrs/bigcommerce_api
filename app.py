@@ -320,11 +320,12 @@ def get_order(order_id):
     try:
         get_shipping = requests.get(ship_url, headers=headers)
         call_api = requests.get(order_url, headers=headers)
-        order = call_api.Context
-        order['shipping_address'] = get_shipping
+        order = call_api.content
+        order['shipping_addresses'] = get_shipping.content
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
+        sys.stdout.write(str(dir(call_api)) + "\n")
         sys.stdout.write(str(order) + "\n")
         response = app.response_class(
             status=200,
