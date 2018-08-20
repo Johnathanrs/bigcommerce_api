@@ -285,8 +285,8 @@ def send_order(order, shipping, products):
     try:
         total = len(products) - 1
         items = []
-
-        send_request = {} '''
+        send_request = {}
+        """ {
             "external_ref": order['id'],
             "company_ref_id":'20776',
             "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
@@ -304,8 +304,7 @@ def send_order(order, shipping, products):
             "billing_country": order['billing_address']['country'],
             "billing_postcode": order['billing_address']['country_iso2']
             }
-            '''
-
+        """
         while total >= 0:
             order = {
                 "sku": products[total]['sku'],
