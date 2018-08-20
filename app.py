@@ -341,15 +341,22 @@ def get_order(order_id):
         products = get_products.content
         shipping = get_shipping.content
         order = get_order.content
+        send_order(order, shipping, products)
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
-        send_order(order, shipping, products)
-        response = app.response_class(
-            status=200,
-            mimetype='application/json'
-            )
-        return response
+        if products != None:
+            response = app.response_class(
+                status=200,
+                mimetype='application/json'
+                )
+            return response
+        else:
+            response = app.response_class(
+                status=400,
+                mimetype='application/json'
+                )
+            return response
 
 #Callback API Endpoint: Activates through BC webhook
 @app.route('/bigcommerce/message', methods=['POST'])
