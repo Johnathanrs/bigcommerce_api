@@ -281,7 +281,7 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
-    sys.stdout.write(str(products[0]['sku']) + "\n")
+    sys.stdout.write(dir(products), "\n")
     """
     try:
         total = len(products) - 1
