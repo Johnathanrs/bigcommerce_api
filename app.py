@@ -348,7 +348,7 @@ def get_order(order_id):
         products = get_products.content
         shipping = get_shipping.content
         order = get_order.content
-        send_order(order, shipping, products)
+        send_order(order.decode("utf-8"), shipping.decode("utf-8"), products.decode("utf-8"))
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
