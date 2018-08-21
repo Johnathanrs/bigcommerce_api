@@ -281,13 +281,12 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
-    sys.stdout.write(str(type(products)))
-    sys.stdout.write(str(products))
-    """
+
     try:
         total = len(products) - 1
         items = []
-        send_request = {"sku": products[total]['sku']}
+        send_request = {}
+        """
         {
             "external_ref": order['id'],
             "company_ref_id":'20776',
@@ -306,6 +305,7 @@ def send_order(order, shipping, products):
             "billing_country": order['billing_address']['country'],
             "billing_postcode": order['billing_address']['country_iso2']
             }
+        """
         while total >= 0:
             order = {
                 "sku": products[total]['sku'],
@@ -343,12 +343,22 @@ def get_order(order_id):
     #Get Order: Call Bigcommerce API
     try:
         get_products = requests.get(product_url, headers=headers)
-        get_shipping = requests.get(ship_url, headers=headers)
-        get_order = requests.get(order_url, headers=headers)
         products = get_products.content
+        products.decode("utf-8")
+        dproducts = json.loads(products)
+
+        get_shipping = requests.get(ship_url, headers=headers)
         shipping = get_shipping.content
+        shipping.decode("utf-8")
+        dshipping = json.loads(shipping)
+
+        get_order = requests.get(order_url, headers=headers)
         order = get_order.content
-        send_order(order.decode("utf-8"), shipping.decode("utf-8"), products.decode("utf-8"))
+        order.decode("utf-8")
+        dorder = json.loads(order)
+
+        send_order(dorder, dshipping, dproducts)
+
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
