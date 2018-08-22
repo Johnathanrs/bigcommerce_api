@@ -338,11 +338,10 @@ def send_order(order, shipping, products):
             time.sleep(300)
     except Exception as e:
         sys.stdout.write(e)
-    '''
     finally:
         sys.stdout.write("****************** End *****************" + "\n")
         sys.stdout.write(str(send_package.status_code) + "\n")
-        '''
+
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
 def get_order(order_id):
