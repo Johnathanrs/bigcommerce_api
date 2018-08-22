@@ -314,8 +314,8 @@ def send_order(order, shipping, products):
                 "description": products[total]['name'],
                 "type": 1,
                 "quantity": products[total]['quantity'],
-                "external_url": app.config['APP_URL'] + '/products/' + products[total]['sku'] + '.jpeg',
-                "external_thumbnail_url": app.config['APP_URL'] + '/thumbnails/' + products[total]['sku'] + '.webp'
+                "external_url": app.config['APP_URL'] + '/products/' + products[total]['sku'],
+                "external_thumbnail_url": app.config['APP_URL'] + '/thumbnails/' + products[total]['sku']
                 }
             items.append(order)
             total -= 1
@@ -323,27 +323,24 @@ def send_order(order, shipping, products):
 
         #utf-8 encoding
         package = json.dumps(send_request)
-        package.encode('utf-8')
+        package = unicode(package)
 
-        '''
         #send package
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         attempts = 288
         send_package = requests.post(url, data=package, headers=settings)
 
-        while send_package.status_code != 200 and attempts > 0:
+        while (send_package.status_code != 200 or send_package.status != 201) and attempts > 0:
             send_package = requests.post(package, json=package, headers=headers)
             attempts -= 1
             sys.stdout.write("Failed to send. Resending in 10m")
-            time.sleep(300)'''
+            time.sleep(300)
     except Exception as e:
         sys.stdout.write(e)
     finally:
-        sys.stdout.write("************** send_request() *****************" + "\n")
-        sys.stdout.write(str(send_request) + "\n")
-        sys.stdout.write("************** package_type *******************" + "\n")
-
+        sys.stdout.write("****************** End *****************" + "\n")
+        sys.stdout.write(str(send_package.status_code) + "\n")
 
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
