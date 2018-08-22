@@ -324,8 +324,9 @@ def send_order(order, shipping, products):
         package = json.dumps(send_request)
         package.encode('utf-8')
 
+        '''
         #send package
-        settings = {'Content-Type'='application/json'}
+        settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         attempts = 288
         send_package = requests.post(url, data=package, headers=settings)
@@ -334,13 +335,14 @@ def send_order(order, shipping, products):
             send_package = requests.post(package, json=package, headers=headers)
             attempts -= 1
             sys.stdout.write("Failed to send. Resending in 10m")
-            time.sleep(300)
+            time.sleep(300)'''
     except Exception as e:
         sys.stdout.write(e)
     finally:
-        sys.stdout.write("************** BEGIN *****************" + "\n")
+        sys.stdout.write("************** send_request() *****************" + "\n")
         sys.stdout.write(str(send_request) + "\n")
-        sys.stdout.write("************** END *******************" + "\n")
+        sys.stdout.write("************** package_type *******************" + "\n")
+        sys.stdout.write(str(type(package)) + "\n")
 
 
 #Calls BC API based on settings and passes send_order
