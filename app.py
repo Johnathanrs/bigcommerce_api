@@ -314,7 +314,8 @@ def send_order(order, shipping, products):
                 "description": products[total]['name'],
                 "type": 1,
                 "quantity": products[total]['quantity'],
-                "external_url": get_image(products[total]['sku'])
+                "external_url": app.config['APP_URL'] + '/products/' + products[total]['sku'] + '.jpeg',
+                "external_thumbnail_url": app.config['APP_URL'] + '/products/' + products[total]['sku'] + '.webp'
                 }
             items.append(order)
             total -= 1
@@ -342,7 +343,6 @@ def send_order(order, shipping, products):
         sys.stdout.write("************** send_request() *****************" + "\n")
         sys.stdout.write(str(send_request) + "\n")
         sys.stdout.write("************** package_type *******************" + "\n")
-        sys.stdout.write(str(type(package)) + "\n")
 
 
 #Calls BC API based on settings and passes send_order
@@ -473,6 +473,11 @@ def webhooks():
 def get_image(sku):
     image = sku + '.jpeg'
     return render_template('products.html', sku=image)
+
+@app.route('/thumbnails/<sku>')
+def get_thumbnail(sku):
+    thumb = sku + '.webp'
+    return render_template('thumbnails.html', sku=thumb)
 
 @app.route('/instructions')
 def instructions():
