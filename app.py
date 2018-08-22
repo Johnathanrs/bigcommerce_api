@@ -315,7 +315,7 @@ def send_order(order, shipping, products):
                 "type": 1,
                 "quantity": products[total]['quantity'],
                 "external_url": app.config['APP_URL'] + '/products/' + products[total]['sku'] + '.jpeg',
-                "external_thumbnail_url": app.config['APP_URL'] + '/products/' + products[total]['sku'] + '.webp'
+                "external_thumbnail_url": app.config['APP_URL'] + '/thumbnails/' + products[total]['sku'] + '.webp'
                 }
             items.append(order)
             total -= 1
