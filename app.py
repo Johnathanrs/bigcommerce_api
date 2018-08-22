@@ -330,7 +330,7 @@ def send_order(order, shipping, products):
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         attempts = 288
         send_package = requests.post(url, data=package, headers=settings)
-        sys.stdout.write(send_package)
+        sys.stdout.write(str(send_package))
         while (send_package.status_code != 200 or send_package.status != 201) and attempts > 0:
             send_package = requests.post(package, json=package, headers=headers)
             attempts -= 1
