@@ -395,11 +395,11 @@ def get_order(order_id):
 #Callback API Endpoint: Activates through BC webhook
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
-    sys.stdout.write("************** Message has been called ***************\n")
     post = request.get_json()
     if post['scope'] == 'store/order/created':
-        sys.stdout.write("************** Order has been called ***************\n")
         get_order(post['data']['id'])
+    else:
+        pass
 
     if request.headers['Content-Type'] == 'text/plain':
         data = {}
