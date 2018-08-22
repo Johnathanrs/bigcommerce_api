@@ -399,8 +399,6 @@ def message():
     post = request.get_json()
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
-    else:
-        pass
 
     if request.headers['Content-Type'] == 'text/plain':
         data = {}
