@@ -1,5 +1,5 @@
 from bigcommerce.api import BigcommerceApi
-import dotenv, os, sys, flask, requests
+import dotenv, os, sys, flask, requests, time
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from flask import json, Response, jsonify, request, render_template
@@ -260,7 +260,9 @@ def remove_user():
 
     return flask.Response('Deleted', status=204)
 
-""" ********************************************************** """
+#
+#API endpoints
+#
 @app.route('/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
 def api_echo():
     if request.method == 'GET':
@@ -286,7 +288,7 @@ def send_order(order, shipping, products):
         total = len(products) - 1
         items = []
         send_request = {
-            "external_ref": order['id'],
+            "external_ref": str(order['id']),
             "company_ref_id":'20776',
             "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
             "customer_email": shipping[0]['email'],
@@ -303,18 +305,36 @@ def send_order(order, shipping, products):
             "billing_country": order['billing_address']['country'],
             "billing_postcode": order['billing_address']['country_iso2']
             }
-            
+
+        #load item orders
         while total >= 0:
             order = {
                 "sku": products[total]['sku'],
-                "external_ref": products[total]['order_id'],
+                "external_ref": str(products[total]['order_id']),
                 "description": products[total]['name'],
                 "type": 1,
-                "quantity": products[total]['quantity']
+                "quantity": products[total]['quantity'],
+                "external_url": get_image(products[total]['sku'])
                 }
             items.append(order)
             total -= 1
         send_request['items'] = items
+
+        #utf-8 encoding
+        package = json.dumps(send_request)
+        package.encode('utf-8')
+
+        #send package
+        settings = {'Content-Type'='application/json'}
+        url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
+        attempts = 288
+        send_package = requests.post(url, data=package, headers=settings)
+
+        while send_package.status_code != 200 and attempts > 0:
+            send_package = requests.post(package, json=package, headers=headers)
+            attempts -= 1
+            sys.stdout.write("Failed to send. Resending in 10m")
+            time.sleep(300)
     except Exception as e:
         sys.stdout.write(e)
     finally:
@@ -404,7 +424,7 @@ def message():
         f.close()
         return "Binary message written!"
     else:
-        return "415 Unsupported Media Type ;)"
+        return 415
 
 #
 # App interface
@@ -424,7 +444,7 @@ def index():
                             access_token=store.access_token)
 
     # Fetch a few products
-    products = client.Products.all(limit=10)
+    products = client.Products.all()
 
     # Render page
     context = dict()
@@ -446,6 +466,11 @@ def webhooks():
     context['user'] = user
     context['json'] = query
     return render_template('webhooks.html', context=context, test=test)
+
+@app.route('/products/<sku>')
+def get_image(sku):
+    image = sku + '.jpeg'
+    return render_template('products.html', sku=image)
 
 @app.route('/instructions')
 def instructions():
