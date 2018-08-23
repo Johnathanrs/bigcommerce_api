@@ -306,7 +306,6 @@ def send_order(order, shipping, products):
         #load item orders
         while total >= 0:
             order = {
-                "product":
                 "sku": products[total]['sku'],
                 "external_ref": str(products[total]['order_id']),
                 "description": products[total]['name'],
