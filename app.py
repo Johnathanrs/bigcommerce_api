@@ -293,6 +293,8 @@ def send_order(order, shipping, products):
             "shipping_postcode": shipping[0]['zip'],
             "shipping_country": shipping[0]['country'],
             "shipping_country_code": shipping[0]['country_iso2'],
+            "shipping_carrier": "USPS",
+            "shipping_method": "Standard",
             #billing info
             "billing_address_1": order['billing_address']['street_1'],
             "billing_address_2": order['billing_address']['street_2'],
@@ -304,6 +306,7 @@ def send_order(order, shipping, products):
         #load item orders
         while total >= 0:
             order = {
+                "product":
                 "sku": products[total]['sku'],
                 "external_ref": str(products[total]['order_id']),
                 "description": products[total]['name'],
@@ -360,6 +363,7 @@ def get_order(order_id):
         order.decode("utf-8")
         dorder = json.loads(order)
 
+        sys.stdout.write(str(dproducts))
         send_order(dorder, dshipping, dproducts)
     except Exception as e:
         sys.stdout.write(str(e))
@@ -381,7 +385,7 @@ def get_order(order_id):
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
     sys.stdout.write("****************** LOG Start *****************" + "\n")
-    sys.stdout.write(str(request.is_json()) + "\n")
+    sys.stdout.write(str(dir(request)) + "\n")
     post = request.get_json()
     sys.stdout.write(str(post['scope']) + "\n")
     sys.stdout.write(str(request.headers['Content-Type']) + "\n")
