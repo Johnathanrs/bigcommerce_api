@@ -283,7 +283,6 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
-
     try:
         total = len(products) - 1
         items = []
@@ -321,30 +320,18 @@ def send_order(order, shipping, products):
             total -= 1
         send_request['items'] = items
 
-        '''
-        #utf-8 encoding
-        package = json.dumps(send_request)
-        package = unicode(package)
-        '''
-
         #send package
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         attempts = 288
-        send_package = requests.post(url, data=send_request, headers=settings)
-        sys.stdout.write("****************** send_package() *****************" + "\n")
-        sys.stdout.write(str(send_package) + "\n")
-        sys.stdout.write(str(send_package['content']) + "\n")
-        sys.stdout.write(str(send_package['reason']) + "\n")
-        '''
-        while (send_package.status_code != 200 or send_package.status != 201) and attempts > 0:
-            send_package = requests.post(package, json=package, headers=headers)
+        send_package = requests.post(url, json=send_request, headers=settings)
+        while (send_package.status_code != 200 or send_package.status_code != 201) and attempts > 0:
+            send_package = requests.post(url, json=send_request, headers=settings)
             attempts -= 1
-            sys.stdout.write("Failed to send. Resending in 10m")
+            sys.stdout.write("Failed to send. Resending in 10m \n")
             time.sleep(300)
-        '''
     except Exception as e:
-        sys.stdout.write(e)
+        sys.stdout.write(e + "\n")
     finally:
         sys.stdout.write("****************** End *****************" + "\n")
         sys.stdout.write(str(send_package.status_code) + "\n")
