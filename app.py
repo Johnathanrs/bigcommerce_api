@@ -381,9 +381,10 @@ def get_order(order_id):
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
     sys.stdout.write("****************** LOG Start *****************" + "\n")
-    sys.stdout.write(str(request) + "\n")
-    sys.stdout.write(str(dir(request)) + "\n")
+    sys.stdout.write(str(request.is_json()) + "\n")
     post = request.get_json()
+    sys.stdout.write(str(post['scope']) + "\n")
+    sys.stdout.write(str(request.headers['Content-Type']) + "\n")
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
 
