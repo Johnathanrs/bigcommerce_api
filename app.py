@@ -74,7 +74,6 @@ class Store(db.Model):
         return '<Store id=%d store_hash=%s access_token=%s scope=%s>' \
                % (self.id, self.store_hash, self.access_token, self.scope)
 
-
 #
 # Error handling and helpers
 #
@@ -113,7 +112,6 @@ def client_secret():
 #
 # OAuth pages
 #
-
 
 # The Auth Callback URL. See https://developer.bigcommerce.com/api/callback
 @app.route('/bigcommerce/callback', methods=['GET', 'POST'])
@@ -207,7 +205,6 @@ def load():
     flask.session['storeuserid'] = storeuser.id
     return flask.redirect(app.config['APP_URL'])
 
-
 # The Uninstall URL. See https://developer.bigcommerce.com/api/load
 @app.route('/bigcommerce/uninstall')
 def uninstall():
@@ -233,7 +230,6 @@ def uninstall():
     db.session.commit()
 
     return flask.Response('Deleted', status=204)
-
 
 # The Remove User Callback URL.
 @app.route('/bigcommerce/remove-user')
@@ -325,19 +321,12 @@ def send_order(order, shipping, products):
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         attempts = 288
         send_package = requests.post(url, json=send_request, headers=settings)
-        sys.stdout.write(str(send_package.text) + "\n")
-        '''
-        while (send_package.status_code != 200 or send_package.status_code != 201) and attempts > 0:
-            send_package = requests.post(url, json=send_request, headers=settings)
-            attempts -= 1
-            sys.stdout.write("Failed to send. Resending in 10m \n")
-            time.sleep(300)
-        '''
     except Exception as e:
         sys.stdout.write(e + "\n")
     finally:
+        sys.stdout.write(str("Status Code: " + send_package.status_code) + "\n")
+        sys.stdout.write(str(send_package.text) + "\n")
         sys.stdout.write("****************** End *****************" + "\n")
-        sys.stdout.write(str(send_package.status_code) + "\n")
 
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
@@ -372,7 +361,6 @@ def get_order(order_id):
         dorder = json.loads(order)
 
         send_order(dorder, dshipping, dproducts)
-
     except Exception as e:
         sys.stdout.write(str(e))
     finally:
@@ -392,6 +380,7 @@ def get_order(order_id):
 #Callback API Endpoint: Activates through BC webhook
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
+    sys.stdout.write("****************** LOG Start *****************" + "\n")
     post = request.get_json()
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
