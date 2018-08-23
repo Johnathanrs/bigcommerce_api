@@ -333,8 +333,8 @@ def send_order(order, shipping, products):
         attempts = 288
         send_package = requests.post(url, data=send_request, headers=settings)
         sys.stdout.write("****************** send_package() *****************" + "\n")
-        sys.stdout.write(str(send_package))
-        sys.stdout.write(str(send_package['error']))
+        sys.stdout.write(str(send_package) + "\n")
+        sys.stdout.write(str(dir(send_package)) + "\n")
         '''
         while (send_package.status_code != 200 or send_package.status != 201) and attempts > 0:
             send_package = requests.post(package, json=package, headers=headers)
