@@ -325,11 +325,14 @@ def send_order(order, shipping, products):
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         attempts = 288
         send_package = requests.post(url, json=send_request, headers=settings)
+        sys.stdout.write(str(send_package.text) + "\n")
+        '''
         while (send_package.status_code != 200 or send_package.status_code != 201) and attempts > 0:
             send_package = requests.post(url, json=send_request, headers=settings)
             attempts -= 1
             sys.stdout.write("Failed to send. Resending in 10m \n")
             time.sleep(300)
+        '''
     except Exception as e:
         sys.stdout.write(e + "\n")
     finally:
