@@ -334,11 +334,14 @@ def send_order(order, shipping, products):
         send_package = requests.post(url, data=send_request, headers=settings)
         sys.stdout.write("****************** send_package() *****************" + "\n")
         sys.stdout.write(str(send_package))
+        sys.stdout.write(str(send_package['error']))
+        '''
         while (send_package.status_code != 200 or send_package.status != 201) and attempts > 0:
             send_package = requests.post(package, json=package, headers=headers)
             attempts -= 1
             sys.stdout.write("Failed to send. Resending in 10m")
             time.sleep(300)
+        '''
     except Exception as e:
         sys.stdout.write(e)
     finally:
