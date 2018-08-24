@@ -322,7 +322,7 @@ def send_order(order, shipping, products):
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         send_package = requests.post(url, json=send_request, headers=settings)
-        sys.stdout.write(send_package.text) + "\n")
+        sys.stdout.write(send_package.text + "\n")
     except Exception as e:
         sys.stdout.write("****************** Exception Called *****************" + "\n")
         sys.stdout.write(e + "\n")
