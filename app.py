@@ -283,6 +283,9 @@ def send_order(order, shipping, products):
         sys.stdout.write("****************** send_order Start *****************" + "\n")
         total = len(products) - 1
         items = []
+        sys.stdout.write(str(order) + "\n")
+        sys.stdout.write(str(shipping) + "\n")
+        sys.stdout.write(str(products) + "\n")
         send_request = {
             "external_ref": str(order['id']),
             "external_product_id": str(products['product_id']),
