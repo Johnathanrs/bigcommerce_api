@@ -279,7 +279,6 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
-    sys.stdout.write("****************** send_order Start *****************" + "\n")
     try:
         total = len(products) - 1
         items = []
@@ -304,7 +303,7 @@ def send_order(order, shipping, products):
             "billing_country": order['billing_address']['country'],
             "billing_postcode": order['billing_address']['country_iso2']
             }
-
+        sys.stdout.write("****************** get_order Start *****************" + "\n")
         #load item orders
         while total >= 0:
             order = {
@@ -323,8 +322,12 @@ def send_order(order, shipping, products):
         #send package
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
-        attempts = 288
+        
+        sys.stdout.write("****************** send_package Start *****************" + "\n")
+        sys.stdout.write(str(send_request) + "\n")
         send_package = requests.post(url, json=send_request, headers=settings)
+        sys.stdout.write("****************** send_package End *****************" + "\n")
+        sys.stdout.write(str(send_package) + "\n")
     except Exception as e:
         sys.stdout.write(e + "\n")
     finally:
@@ -335,7 +338,6 @@ def send_order(order, shipping, products):
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
 def get_order(order_id):
-    sys.stdout.write("****************** get_order Start *****************" + "\n")
     #Settings for GET REQUEST
     store_hash = '27ls85ds6i'
     order_url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
@@ -392,7 +394,6 @@ def message():
         get_order(post['data']['id'])
 
     if request.headers['Content-Type'] == 'text/plain':
-        sys.stdout.write("****************** Response plain *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -401,7 +402,6 @@ def message():
             )
         return response
     elif request.headers['Content-Type'] == 'application/json':
-        sys.stdout.write("****************** Response json *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
