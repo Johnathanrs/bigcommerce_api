@@ -280,6 +280,7 @@ def api_echo():
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
     try:
+        sys.stdout.write("****************** send_order Start *****************" + "\n")
         total = len(products) - 1
         items = []
         send_request = {
@@ -303,7 +304,6 @@ def send_order(order, shipping, products):
             "billing_country": order['billing_address']['country'],
             "billing_postcode": order['billing_address']['country_iso2']
             }
-        sys.stdout.write("****************** get_order Start *****************" + "\n")
         #load item orders
         while total >= 0:
             order = {
@@ -322,7 +322,7 @@ def send_order(order, shipping, products):
         #send package
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
-        
+
         sys.stdout.write("****************** send_package Start *****************" + "\n")
         sys.stdout.write(str(send_request) + "\n")
         send_package = requests.post(url, json=send_request, headers=settings)
