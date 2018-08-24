@@ -279,6 +279,7 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
+    sys.stdout.write("****************** send_order Start *****************" + "\n")
     try:
         total = len(products) - 1
         items = []
@@ -334,6 +335,7 @@ def send_order(order, shipping, products):
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
 def get_order(order_id):
+    sys.stdout.write("****************** get_order Start *****************" + "\n")
     #Settings for GET REQUEST
     store_hash = '27ls85ds6i'
     order_url = 'https://api.bigcommerce.com/stores/{}/v2/orders/{}'.format(store_hash, order_id)
@@ -384,14 +386,13 @@ def get_order(order_id):
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
     sys.stdout.write("****************** LOG Start *****************" + "\n")
-    sys.stdout.write(str(dir(request)) + "\n")
     post = request.get_json()
-    sys.stdout.write(str(post['scope']) + "\n")
-    sys.stdout.write(str(request.headers['Content-Type']) + "\n")
+    sys.stdout.write(str(post) + "\n")
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
 
     if request.headers['Content-Type'] == 'text/plain':
+        sys.stdout.write("****************** Response plain *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -400,6 +401,7 @@ def message():
             )
         return response
     elif request.headers['Content-Type'] == 'application/json':
+        sys.stdout.write("****************** Response json *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
