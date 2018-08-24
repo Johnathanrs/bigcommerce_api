@@ -327,7 +327,7 @@ def send_order(order, shipping, products):
         sys.stdout.write(e + "\n")
         get_order(send_request["external_ref"])
     finally:
-        sys.stdout.write(send_package.text) + "\n")
+        sys.stdout.write(send_package.text + "\n")
 
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
