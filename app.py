@@ -280,7 +280,6 @@ def api_echo():
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
     try:
-        sys.stdout.write("****************** send_order Start *****************" + "\n")
         total = len(products) - 1
         items = []
         sys.stdout.write(str(order) + "\n")
@@ -335,7 +334,6 @@ def send_order(order, shipping, products):
         sys.stdout.write(e + "\n")
     finally:
         sys.stdout.write(str("Status Code: " + send_package.status_code) + "\n")
-        sys.stdout.write(str(send_package.text) + "\n")
         sys.stdout.write("****************** End *****************" + "\n")
 
 #Calls BC API based on settings and passes send_order
