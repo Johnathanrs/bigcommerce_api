@@ -322,14 +322,12 @@ def send_order(order, shipping, products):
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         send_package = requests.post(url, json=send_request, headers=settings)
-        sys.stdout.write(send_package.text + "\n")
     except Exception as e:
-        sys.stdout.write("****************** Exception Called *****************" + "\n")
+        sys.stdout.write("************** Exception Called ***************" + "\n")
         sys.stdout.write(e + "\n")
         get_order(send_request["external_ref"])
     finally:
-        sys.stdout.write(str(send_package) + "\n")
-        sys.stdout.write("****************** End *****************" + "\n")
+        sys.stdout.write(send_package.text) + "\n")
 
 #Calls BC API based on settings and passes send_order
 @app.route('/bigcommerce/get_order', methods=['GET'])
@@ -388,8 +386,6 @@ def message():
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
 
-    sys.stdout.write(str(dir(request.headers)) + "\n")
-    sys.stdout.write(str(request.headers) + "\n")
     if request.headers['Accept'] == 'text/plain':
         data = {}
         response = app.response_class(
