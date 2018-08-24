@@ -322,14 +322,13 @@ def send_order(order, shipping, products):
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
         send_package = requests.post(url, json=send_request, headers=settings)
-        sys.stdout.write("****************** send_package End *****************" + "\n")
-        sys.stdout.write(str(send_package) + "\n")
+        sys.stdout.write(str(dir(send_package)) + "\n")
     except Exception as e:
         sys.stdout.write("****************** Exception Called *****************" + "\n")
         sys.stdout.write(e + "\n")
         get_order(send_request["external_ref"])
     finally:
-        sys.stdout.write(str(send_package.status_code) + "\n")
+        sys.stdout.write(str(send_package) + "\n")
         sys.stdout.write("****************** End *****************" + "\n")
 
 #Calls BC API based on settings and passes send_order
@@ -390,7 +389,9 @@ def message():
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
 
+    sys.stdout.write("****************** Response Start *****************" + "\n")
     if request.headers['Content-Type'] == 'text/plain':
+        sys.stdout.write("****************** text/plain Start *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -399,6 +400,7 @@ def message():
             )
         return response
     elif request.headers['Content-Type'] == 'application/json':
+        sys.stdout.write("****************** application/json Start *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
