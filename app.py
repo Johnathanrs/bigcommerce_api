@@ -284,11 +284,11 @@ def send_order(order, shipping, products):
         total = len(products) - 1
         items = []
         sys.stdout.write(str(order) + "\n")
-        sys.stdout.write(str(shipping) + "\n")
-        sys.stdout.write(str(products) + "\n")
+        sys.stdout.write(str(shipping[0]) + "\n")
+        sys.stdout.write(str(products[0]) + "\n")
         send_request = {
             "external_ref": str(order['id']),
-            "external_product_id": str(products['product_id']),
+            "external_product_id": str(products[0]['product_id']),
             "company_ref_id":'20776',
             "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
             "customer_email": shipping[0]['email'],
@@ -387,7 +387,7 @@ def get_order(order_id):
                 )
             return response
 
-#Callback API Endpoint: Activates through BC webhook
+#Callback API Endpoint: Activates through BC webhook that has been setup.
 @app.route('/bigcommerce/message', methods=['POST'])
 def message():
     sys.stdout.write("****************** LOG Start *****************" + "\n")
