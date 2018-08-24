@@ -390,14 +390,14 @@ def message():
         get_order(post['data']['id'])
 
     sys.stdout.write("****************** Response Start *****************" + "\n")
-    sys.stdout.write(str(post) + "\n")
-    sys.stdout.write(str(dir(request)) + "\n")
+    sys.stdout.write(str(dir(request.headers)) + "\n")
+    sys.stdout.write(str(request.headers) + "\n")
     if request.headers['Content-Type'] == 'text/plain':
         sys.stdout.write("****************** text/plain Start *****************" + "\n")
         data = {}
         response = app.response_class(
             response=json.dumps(data),
-            status=200,
+            status='200',
             mimetype='application/json'
             )
         return response
@@ -406,7 +406,7 @@ def message():
         data = {}
         response = app.response_class(
             response=json.dumps(data),
-            status=200,
+            status='200',
             mimetype='application/json'
             )
         return response
