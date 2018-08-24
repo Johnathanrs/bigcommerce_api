@@ -279,48 +279,45 @@ def api_echo():
 #Calls WOYC API based on paramaters.
 @app.route('/WOYC/send_order', methods=['POST'])
 def send_order(order, shipping, products):
-    try:
-        total = len(products) - 1
-        items = []
-        sys.stdout.write(str(order) + "\n")
-        sys.stdout.write(str(shipping[0]) + "\n")
-        sys.stdout.write(str(products[0]) + "\n")
-        send_request = {
-            "external_ref": str(order['id']),
-            "external_product_id": str(products[0]['product_id']),
-            "company_ref_id":'20776',
-            "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
-            "customer_email": shipping[0]['email'],
-            # shipping info
-            "shipping_address_1": shipping[0]['street_1'],
-            "shipping_address_2": shipping[0]['street_2'],
-            "shipping_postcode": shipping[0]['zip'],
-            "shipping_country": shipping[0]['country'],
-            "shipping_country_code": shipping[0]['country_iso2'],
-            "shipping_carrier": "USPS",
-            "shipping_method": "Standard",
-            #billing info
-            "billing_address_1": order['billing_address']['street_1'],
-            "billing_address_2": order['billing_address']['street_2'],
-            "billing_postcode": order['billing_address']['zip'],
-            "billing_country": order['billing_address']['country'],
-            "billing_postcode": order['billing_address']['country_iso2']
+    total = len(products) - 1
+    items = []
+    send_request = {
+        "external_ref": str(order['id']),
+        "external_product_id": str(products[0]['product_id']),
+        "company_ref_id":'20776',
+        "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
+        "customer_email": shipping[0]['email'],
+        # shipping info
+        "shipping_address_1": shipping[0]['street_1'],
+        "shipping_address_2": shipping[0]['street_2'],
+        "shipping_postcode": shipping[0]['zip'],
+        "shipping_country": shipping[0]['country'],
+        "shipping_country_code": shipping[0]['country_iso2'],
+        "shipping_carrier": "USPS",
+        "shipping_method": "Standard",
+        #billing info
+        "billing_address_1": order['billing_address']['street_1'],
+        "billing_address_2": order['billing_address']['street_2'],
+        "billing_postcode": order['billing_address']['zip'],
+        "billing_country": order['billing_address']['country'],
+        "billing_postcode": order['billing_address']['country_iso2']
+        }
+    #load item orders
+    while total >= 0:
+        order = {
+            "sku": products[total]['sku'],
+            "external_ref": str(products[total]['order_id']),
+            "description": products[total]['name'],
+            "type": 1,
+            "quantity": products[total]['quantity'],
+            "external_url": app.config['APP_URL'] + '/products/' + products[total]['sku'],
+            "external_thumbnail_url": app.config['APP_URL'] + '/thumbnails/' + products[total]['sku']
             }
-        #load item orders
-        while total >= 0:
-            order = {
-                "sku": products[total]['sku'],
-                "external_ref": str(products[total]['order_id']),
-                "description": products[total]['name'],
-                "type": 1,
-                "quantity": products[total]['quantity'],
-                "external_url": app.config['APP_URL'] + '/products/' + products[total]['sku'],
-                "external_thumbnail_url": app.config['APP_URL'] + '/thumbnails/' + products[total]['sku']
-                }
-            items.append(order)
-            total -= 1
-        send_request['items'] = items
+        items.append(order)
+        total -= 1
+    send_request['items'] = items
 
+    try:
         #send package
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
@@ -332,6 +329,7 @@ def send_order(order, shipping, products):
         sys.stdout.write(str(send_package) + "\n")
     except Exception as e:
         sys.stdout.write(e + "\n")
+        get_order(send_request["external_ref"])
     finally:
         sys.stdout.write(str("Status Code: " + send_package.status_code) + "\n")
         sys.stdout.write("****************** End *****************" + "\n")
