@@ -284,6 +284,7 @@ def send_order(order, shipping, products):
         items = []
         send_request = {
             "external_ref": str(order['id']),
+            "external_product_id": str(products['product_id']),
             "company_ref_id":'20776',
             "customer_name": shipping[0]['first_name'] + " " + shipping[0]['last_name'],
             "customer_email": shipping[0]['email'],
@@ -362,7 +363,6 @@ def get_order(order_id):
         order.decode("utf-8")
         dorder = json.loads(order)
 
-        sys.stdout.write(str(dproducts))
         send_order(dorder, dshipping, dproducts)
     except Exception as e:
         sys.stdout.write(str(e))
@@ -444,17 +444,6 @@ def index():
     context['api_url'] = client.connection.host
     context['json'] = json.dumps(request.json)
     return render('index.html', context)
-
-@app.route('/webhooks')
-def webhooks():
-    storeuser = StoreUser.query.filter_by(id=flask.session['storeuserid']).first()
-    query = Calls.query.all()
-    test = request.get_json()
-    user = storeuser.user
-    context = dict()
-    context['user'] = user
-    context['json'] = query
-    return render_template('webhooks.html', context=context, test=test)
 
 @app.route('/products/<sku>')
 def get_image(sku):
