@@ -385,15 +385,12 @@ def get_order(order_id):
 def message():
     sys.stdout.write("****************** LOG Start *****************" + "\n")
     post = request.get_json()
-    sys.stdout.write(str(post) + "\n")
     if post['scope'] == 'store/order/created':
         get_order(post['data']['id'])
 
-    sys.stdout.write("****************** Response Start *****************" + "\n")
     sys.stdout.write(str(dir(request.headers)) + "\n")
     sys.stdout.write(str(request.headers) + "\n")
-    if request.headers['Content-Type'] == 'text/plain':
-        sys.stdout.write("****************** text/plain Start *****************" + "\n")
+    if request.headers['Accept'] == 'text/plain':
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -401,8 +398,7 @@ def message():
             mimetype='application/json'
             )
         return response
-    elif request.headers['Content-Type'] == 'application/json':
-        sys.stdout.write("****************** application/json Start *****************" + "\n")
+    elif request.headers['Accept'] == 'application/json':
         data = {}
         response = app.response_class(
             response=json.dumps(data),
@@ -410,7 +406,7 @@ def message():
             mimetype='application/json'
             )
         return response
-    elif request.headers['Content-Type'] == 'application/octet-stream':
+    elif request.headers['Accept'] == 'application/octet-stream':
         f = open('./binary', 'wb')
         f.write(request.data)
         f.close()
