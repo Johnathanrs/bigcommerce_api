@@ -321,17 +321,15 @@ def send_order(order, shipping, products):
         #send package
         settings = {'Content-Type':'application/json'}
         url = 'https://api-sl-2-1.custom-gateway.net/order/?k=B34BD15F58BA68E828974D69EE8'
-
-        sys.stdout.write("****************** send_package Start *****************" + "\n")
-        sys.stdout.write(str(send_request) + "\n")
         send_package = requests.post(url, json=send_request, headers=settings)
         sys.stdout.write("****************** send_package End *****************" + "\n")
         sys.stdout.write(str(send_package) + "\n")
     except Exception as e:
+        sys.stdout.write("****************** Exception Called *****************" + "\n")
         sys.stdout.write(e + "\n")
         get_order(send_request["external_ref"])
     finally:
-        sys.stdout.write(str("Status Code: " + send_package.status_code) + "\n")
+        sys.stdout.write(str(send_package.status_code) + "\n")
         sys.stdout.write("****************** End *****************" + "\n")
 
 #Calls BC API based on settings and passes send_order
